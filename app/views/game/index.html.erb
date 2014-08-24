@@ -13,25 +13,25 @@
 	<br>
 	<br>
 	<div class="hidden" id="game_container" >
-		<div class="blcok clear">
-			<div class="left"> Time :&nbsp;</div>
-			<div class="left" id="time_container"> </div>
-			<div class="clear"></div>
-		</div>
-		<div class="block clear">
+		<div class="block left">
 			<div class = "left"> Score :&nbsp;</div>
 			<div class = "left" id="score_container"> 0 </div>
 			<div class = "clear"></div>
 		</div>
+		<div class="block right">
+			<div class="left"> Time :&nbsp;</div>
+			<div class="left" id="time_container"> 0 </div>
+			<div class="clear"></div>
+		</div>
+		<div class="clear"></div>
 		<br>
 		<div id="game_area">
-			<div class="block clear left">
-				<div class = "left"> Object :&nbsp;</div>
-				<div class = "left" id="object_container"></div>
-				<div class = "clear"></div>
+			<div class="block clear" id="object_holder">
+				<div class = "half left" id="object_text"> Object :&nbsp;</div>
+				<div class = "half left" id="object_container"></div>
 			</div>
 			&nbsp;&nbsp;&nbsp;
-			<div class="hidden left" id="loading_container"> <img src= "<%= image_path("loading.gif") %>" /> </div>
+			<div class="hidden" id="loading_container"> <div id="loader"> <img src= "<%= image_path("loading.gif") %>" /> </div></div>
 			<div class = "clear"></div>
 			<br>
 			<div id="options"></div>
@@ -97,11 +97,13 @@
 			$('#time_container').html(this.ticks.toString());
 			$('#score_container').html(this.score.toString());
 			can_types = Object.keys(Game.objects);
-			radio_prototype = "<div class='option_container'><input type='radio' name = '{{option}}'' value = '{{option}}' class='option' id='{{option}}' > <label for='{{option}}'> {{option}} </label> </div>"
+			image_path = '<img src= "<%= image_path("trash_can.png") %>" width="270px"/>';
+			radio_prototype = "<div class='option_container left'><input type='radio' name = '{{option}}'' value = '{{option}}' class='option' id='{{option}}' > <label for='{{option}}'> {{option}}  "+ image_path+" </label></div>"
 			html = ""
 			for (var i = can_types.length - 1; i >= 0; i--) {
 				html += radio_prototype.replace(/{{option}}/g, can_types[i] );
 			};
+			html += "<div class='clear'> </div>";
 			$('#options').css('visibility','visible').html('');
 			$('#options').html(html);
 			$('#object_container').html(this.get_random_object());
@@ -159,9 +161,48 @@
 
 
 <style>
+#game_area
+{
+	border: 1px solid black;
+}
+#loader
+{
+	width: 30px;
+	margin: auto;
+}
+input
+{
+	display: none;
+}
+.half
+{
+	width: 50%;
+}
+#object_holder
+{
+	margin: 0 auto;  
+}
+
+#object_text
+{
+	text-align: right;
+}
+#object_container
+{
+	text-align: left;
+}
+#game_container
+{
+	width: 810px;
+	/*margin: auto;*/
+}
 .option_container
 {
     text-transform:capitalize;
+    float:left;
+    width: 33%;
+    text-align: center;
+    font-size: 25px;
 }
 .hidden
 {
@@ -175,5 +216,9 @@
 .left
 {
 	float: left;
+}
+.right
+{
+	float: right;
 }
 </style>
