@@ -26,7 +26,6 @@ development:
   encoding: unicode
   database: sort_the_trash
   pool: 5
-  username: gamer
   password: test_password
 
 # test:
@@ -88,7 +87,9 @@ development:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
-# production:
-#   database: sort_the_trash_production
-#   username: gamer
-#   password: test_password
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: sort_the_trash_production
+  pool: 5
+  password: test_password
