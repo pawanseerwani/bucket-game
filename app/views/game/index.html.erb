@@ -93,7 +93,8 @@
 			this.score = 0;
 			this.ticks = GAME_TIME;
 			timeout_variable = setInterval(function(){Game.timer()},1000);
-			$("#game_container").css("visibility", "visible");
+			$("#game_container10").css("visibility", "visible");
+			$("#game_area").css("visibility", "visible");
 			$('#time_container').html(this.ticks.toString());
 			$('#score_container').html(this.score.toString());
 			can_types = Object.keys(Game.objects);
