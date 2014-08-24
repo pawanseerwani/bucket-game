@@ -1,0 +1,16 @@
+<h1>Game#index</h1>
+<p>Find me in app/views/game/index.html.erb</p>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajax({
+	  		url: "/user",
+		})
+		.done(function( data ) {
+	    if ( console && console.log ) {
+	      console.log( "Sample of data:", data );
+	    }
+	  });
+	});
+</script>
+
