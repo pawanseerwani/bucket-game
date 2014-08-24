@@ -1,5 +1,15 @@
 <div id="container">
 	<button id="start_button"> Start Game </button>
+	<div class="block clear">
+		<div class = "left"> High Score :&nbsp;</div>
+		<div class = "left" id="high_score_container"> 0 </div>
+		<div class = "clear"></div>
+	</div>
+	<div class="block clear">
+		<div class = "left"> Total Games :&nbsp;</div>
+		<div class = "left" id="total_games_container"> 0 </div>
+		<div class = "clear"></div>
+	</div>
 	<br>
 	<br>
 	<div class="hidden" id="game_container" >
@@ -87,7 +97,7 @@
 			$('#time_container').html(this.ticks.toString());
 			$('#score_container').html(this.score.toString());
 			can_types = Object.keys(Game.objects);
-			radio_prototype = "<div class='option_container'><input type='radio' name = '{{option}}'' value = '{{option}}' class='option'> {{option}} </div>"
+			radio_prototype = "<div class='option_container'><input type='radio' name = '{{option}}'' value = '{{option}}' class='option' id='{{option}}' > <label for='{{option}}'> {{option}} </label> </div>"
 			html = ""
 			for (var i = can_types.length - 1; i >= 0; i--) {
 				html += radio_prototype.replace(/{{option}}/g, can_types[i] );
@@ -123,6 +133,9 @@
 			alert("Times Up");
 			$('#game_area').css('visibility', 'hidden');
 			$('#options').css('visibility', 'hidden');
+			if (this.score > parseInt($('#high_score_container').html()))
+				$('#high_score_container').html(this.score);
+			$('#total_games_container').html(parseInt($('#total_games_container').html()) + 1);
 			Game.update_score();
 		}
 	};
@@ -132,6 +145,8 @@
 	  		url: "/user",
 		})
 		.done(function( data ) {
+			$('#high_score_container').html(data["high_score"]);
+			$('#total_games_container').html(data["no_of_games"]);
 	  	});
 
 	  	$('#start_button').click(function(){
