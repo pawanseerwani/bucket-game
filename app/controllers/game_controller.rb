@@ -21,8 +21,8 @@ class GameController < ApplicationController
 
   def update_score
   	@game_params = filter_params
-  	#user_id = cookies[:user_id]
-  	user_id = params[:user_id]
+  	user_id = cookies[:user_id]
+  	#user_id = params[:user_id]
   	@user = User.find(user_id) rescue nil
   	if @user
   		create_session_record

@@ -1,16 +1,164 @@
-<h1>Game#index</h1>
-<p>Find me in app/views/game/index.html.erb</p>
-
+<div id="container">
+	<button id="start_button"> Start Game </button>
+	<br>
+	<br>
+	<div class="hidden" id="game_container" >
+		<div class="blcok clear">
+			<div class="left"> Time :&nbsp;</div>
+			<div class="left" id="time_container"> </div>
+			<div class="clear"></div>
+		</div>
+		<div class="block clear">
+			<div class = "left"> Score :&nbsp;</div>
+			<div class = "left" id="score_container"> 0 </div>
+			<div class = "clear"></div>
+		</div>
+		<br>
+		<div id="game_area">
+			<div class="block clear left">
+				<div class = "left"> Object :&nbsp;</div>
+				<div class = "left" id="object_container"></div>
+				<div class = "clear"></div>
+			</div>
+			&nbsp;&nbsp;&nbsp;
+			<div class="hidden left" id="loading_container"> <img src= "<%= image_path("loading.gif") %>" /> </div>
+			<div class = "clear"></div>
+			<br>
+			<div id="options"></div>
+		</div>
+	</div>
+</div> 
 <script type="text/javascript">
+	GAME_TIME = 30;
+	Game = {
+		score : 0,
+		ticks : GAME_TIME,
+		objects : {
+			"recycle" : [
+				"Aluminum cans",
+				"Paint cans",
+				"Bags"
+			],
+			"compost" : [
+				"Bread, grains and pasta",
+				"Vegetables",
+				"Wooden chop sticks"
+			],
+			"trash" : [
+				"Dental floss",
+				"Diapers",
+				"Sponges"
+			]
+		},
+		get_random_object: function(){
+			can_types = Object.keys(Game.objects);
+			can_index = Math.floor(Math.random()* can_types.length);
+			can_type = can_types[can_index];
+			objects = Game.objects[can_type];
+			object_index = Math.floor(Math.random()*objects.length);
+			random_object = objects[object_index];
+			return random_object;
+		},
+		check_type: function(guessed_can){
+			object = $('#object_container').html();
+			correctly_guessed = this.objects[guessed_can].indexOf(object) >= 0 ;
+			if (correctly_guessed)
+				this.score += 1;
+			else
+				this.score -= 1;
+		},
+		update_score: function(){
+			$.ajax({
+				type: "POST",
+		  		url: "/update_score",
+		  		data: {
+		  			"score" : this.score
+		  		}
+			})
+			.done(function( data ) {
+		    	console.log(data);
+		  	});
+		},
+		init: function(){
+			this.score = 0;
+			this.ticks = GAME_TIME;
+			timeout_variable = setInterval(function(){Game.timer()},1000);
+			$("#game_container").css("visibility", "visible");
+			$('#time_container').html(this.ticks.toString());
+			$('#score_container').html(this.score.toString());
+			can_types = Object.keys(Game.objects);
+			radio_prototype = "<div class='option_container'><input type='radio' name = '{{option}}'' value = '{{option}}' class='option'> {{option}} </div>"
+			html = ""
+			for (var i = can_types.length - 1; i >= 0; i--) {
+				html += radio_prototype.replace(/{{option}}/g, can_types[i] );
+			};
+			$('#options').css('visibility','visible').html('');
+			$('#options').html(html);
+			$('#object_container').html(this.get_random_object());
+			$('.option').click(function(){
+				gueesed_can = this.value;
+				Game.check_type(gueesed_can);
+				$('#loading_container').css('visibility', 'visible');
+				setTimeout("Game.option_click()", 500);
+
+
+			});
+		},
+		option_click : function(){
+			$('#score_container').html(Game.score.toString());
+			$('#object_container').html(Game.get_random_object);
+			$('.option').attr('checked', false);
+			$('#loading_container').css('visibility', 'hidden');
+		},
+		timer: function(){
+			Game.ticks -= 1;
+			$('#time_container').html(Game.ticks.toString());
+			if(Game.ticks <= 0 )
+			{
+				 clearInterval(timeout_variable);
+				 Game.end();
+			}
+		},
+		end: function(){
+			alert("Times Up");
+			$('#game_area').css('visibility', 'hidden');
+			$('#options').css('visibility', 'hidden');
+			Game.update_score();
+		}
+	};
+
 	$(document).ready(function(){
 		$.ajax({
 	  		url: "/user",
 		})
 		.done(function( data ) {
-	    if ( console && console.log ) {
-	      console.log( "Sample of data:", data );
-	    }
-	  });
+	  	});
+
+	  	$('#start_button').click(function(){
+			Game.init();
+		});
+		console.log(Game.objects);
 	});
+
 </script>
 
+
+<style>
+.option_container
+{
+    text-transform:capitalize;
+}
+.hidden
+{
+	visibility: hidden;
+}
+.clear
+{
+	clear: both;
+}
+
+.left
+{
+	float: left;
+}
+</style>
